@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Stack } from '@mui/material';
 import { TextField, Button } from '@mui/material';
+import axios from 'axios';
 
 const Login = () => {
   const [visibility, setVisibility] = useState('password');
@@ -11,6 +12,38 @@ const Login = () => {
     } else {
       setVisibility('password');
     }
+  };
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleEmail = (event) => {
+    setEmail(event.target.value);
+  };
+
+  const handlePassword = (event) => {
+    setPassword(event.target.value);
+  };
+
+  const sendLogin = (e, p) => {
+    axios({
+      headers: {
+        'Content-Type': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      method: 'post',
+      url: 'http://localhost:3000/user/login',
+      data: {
+        email: e,
+        password: p,
+      },
+    })
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
@@ -56,6 +89,8 @@ const Login = () => {
             id="email"
             label="Bir E-posta Girin"
             style={{ marginTop: 30 }}
+            value={email}
+            onChange={handleEmail}
           />
           <Stack direction="row">
             <TextField
@@ -63,6 +98,8 @@ const Login = () => {
               label="Şifre Oluşturun"
               type={visibility}
               style={{ marginTop: 20, width: 310 }}
+              value={password}
+              onChange={handlePassword}
             />
             <img
               src={
@@ -76,6 +113,7 @@ const Login = () => {
                 width: 35,
                 marginTop: 33,
                 marginLeft: 15,
+                opacity: 0.55,
               }}
             />
           </Stack>
@@ -96,7 +134,13 @@ const Login = () => {
             Hesabınız yok mu?
           </p>
         </Button>
-        <Button variant="contained" style={{ marginTop: 20, marginLeft: 120 }}>
+        <Button
+          variant="contained"
+          style={{ marginTop: 20, marginLeft: 120 }}
+          onClick={() => {
+            sendLogin(email, password);
+          }}
+        >
           Giriş Yap
         </Button>
       </div>
