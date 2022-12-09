@@ -6,108 +6,14 @@ import { Button, TextField } from '@mui/material';
 import Popover from '@mui/material/Popover';
 
 const Contacts = () => {
-  //search bar variableları
-  const handleSearch = (event) => {
-    setSearch(event.target.value);
-    searchFilter(search);
-  };
-
-  const [search, setSearch] = useState('');
-
-  searchFilter = (text) => {
-    const newData = datas.filter((item) => {
-      const listItem = `${item.name.toLowerCase()}`;
-      return listItem.indexOf(text.toLowerCase()) > -1;
-    });
-
-    setSdatas(
-      newData.map((el) => {
-        return el;
-      })
-    );
-  };
-
-  // addcontact açılır pencere variableları
-  const [aanchorEl, setaAnchorEl] = React.useState(null);
-
-  const ahandleClick = (event) => {
-    setaAnchorEl(event.currentTarget);
-  };
-
-  const ahandleClose = () => {
-    setaAnchorEl(null);
-  };
-
-  const aopen = Boolean(aanchorEl);
-  const aid = aopen ? 'simple-popover' : undefined;
-
-  const [aname, setaName] = useState('');
-  const [anumber, setaNumber] = useState('');
-
-  const ahandleName = (event) => {
-    setaName(event.target.value);
-  };
-
-  const ahandleNumber = (event) => {
-    setaNumber(event.target.value);
-  };
-
-  // editcontact açılır pencere variableları
-  const [ec, setEc] = useState();
-
-  const [eanchorEl, seteAnchorEl] = React.useState(null);
-
-  const ehandleClick = (event) => {
-    seteAnchorEl(event.currentTarget);
-  };
-
-  const ehandleClose = () => {
-    seteAnchorEl(null);
-  };
-
-  const eopen = Boolean(eanchorEl);
-  const eid = eopen ? 'simple-popover' : undefined;
-
-  const [ename, seteName] = useState('');
-  const [enumber, seteNumber] = useState('');
-
-  const ehandleName = (event) => {
-    seteName(event.target.value);
-  };
-
-  const ehandleNumber = (event) => {
-    seteNumber(event.target.value);
-  };
-
-  // remove contact açılır pencere variableları
-
-  const [ranchorEl, setrAnchorEl] = React.useState(null);
-
-  const rhandleClick = (event) => {
-    setrAnchorEl(event.currentTarget);
-  };
-
-  const rhandleClose = () => {
-    setrAnchorEl(null);
-  };
-
-  const ropen = Boolean(ranchorEl);
-  const rid = eopen ? 'simple-popover' : undefined;
-
   //app'in variableları
   const token =
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOiI2MzhiODczNTViYjQ2MTljODYzZGEwNDUiLCJpYXQiOjE2NzA1MTY1OTYsImV4cCI6MTY3MDUyMzc5Nn0.KfOsgWB27WYvHOyRCZpggTwyiNg3rbs_8boR8UXU3EU';
-
   const [username, setUsername] = useState('');
-
   const datas = [];
-
-  const [sdatas, setSdatas] = useState([]);
-
+  const sdatas = [];
   const color = [];
-
   const [list, setList] = useState([]);
-
   const [count, setCount] = useState(0);
 
   //rastgele renk return eden fonksiyon
@@ -119,6 +25,151 @@ const Contacts = () => {
     }
     return color;
   };
+
+  //search bar variableları
+  const handleSearch = (event) => {
+    setSearch(event.target.value);
+  };
+  const [search, setSearch] = useState('');
+
+  //diziyi listeleme array'ine importlayan fonksiyon
+  const makeList = (arr) => {
+    setList(
+      arr.map((el, c) => {
+        return (
+          <li key={c}>
+            <div
+              style={{
+                display: 'flex',
+                margin: 15,
+                marginLeft: -5,
+              }}
+            >
+              <div
+                style={{
+                  border: '1px solid white',
+                  backgroundColor: color[c],
+                  borderRadius: 20,
+                  height: 40,
+                  width: 40,
+                }}
+              >
+                <p
+                  style={{
+                    textAlign: 'center',
+                    color: 'white',
+                    marginTop: 7,
+                    fontWeight: '500',
+                  }}
+                >
+                  {el[0][0]}
+                </p>
+              </div>
+              <div
+                style={{
+                  marginLeft: 15,
+                  marginTop: 5,
+                  width: 300,
+                  fontSize: 14,
+                }}
+              >
+                {el[0]}{' '}
+              </div>
+              <div style={{ marginTop: 5, fontSize: 13.5, width: 240 }}>
+                {el[1]}
+              </div>
+              {/* rehber düzenleme*/}
+              <img
+                alt="edit"
+                aria-describedby={eid}
+                src={require('../assets/edit.svg')}
+                onClick={(event) => {
+                  ehandleClick(event);
+                  setEc(c);
+                  seteName(datas[c][0]);
+                  seteNumber(datas[c][1]);
+                }}
+                style={{
+                  height: 15,
+                  width: 15,
+                  marginTop: 7.5,
+                  cursor: 'pointer',
+                }}
+              />
+              {/* rehber silme */}
+              <img
+                alt="remove"
+                aria-describedby={rid}
+                onClick={(event) => {
+                  rhandleClick(event);
+                  setEc(c);
+                  seteName(datas[c][0]);
+                }}
+                src={require('../assets/remove.svg')}
+                style={{
+                  height: 15,
+                  width: 15,
+                  marginTop: 7.5,
+                  marginLeft: 50,
+                  cursor: 'pointer',
+                }}
+              />
+            </div>
+          </li>
+        );
+      })
+    );
+  };
+
+  // addcontact açılır pencere variableları
+  const [aanchorEl, setaAnchorEl] = React.useState(null);
+  const ahandleClick = (event) => {
+    setaAnchorEl(event.currentTarget);
+  };
+  const ahandleClose = () => {
+    setaAnchorEl(null);
+  };
+  const aopen = Boolean(aanchorEl);
+  const aid = aopen ? 'simple-popover' : undefined;
+  const [aname, setaName] = useState('');
+  const [anumber, setaNumber] = useState('');
+  const ahandleName = (event) => {
+    setaName(event.target.value);
+  };
+  const ahandleNumber = (event) => {
+    setaNumber(event.target.value);
+  };
+
+  // editcontact açılır pencere variableları
+  const [ec, setEc] = useState();
+  const [eanchorEl, seteAnchorEl] = React.useState(null);
+  const ehandleClick = (event) => {
+    seteAnchorEl(event.currentTarget);
+  };
+  const ehandleClose = () => {
+    seteAnchorEl(null);
+  };
+  const eopen = Boolean(eanchorEl);
+  const eid = eopen ? 'simple-popover' : undefined;
+  const [ename, seteName] = useState('');
+  const [enumber, seteNumber] = useState('');
+  const ehandleName = (event) => {
+    seteName(event.target.value);
+  };
+  const ehandleNumber = (event) => {
+    seteNumber(event.target.value);
+  };
+
+  // remove contact açılır pencere variableları
+  const [ranchorEl, setrAnchorEl] = React.useState(null);
+  const rhandleClick = (event) => {
+    setrAnchorEl(event.currentTarget);
+  };
+  const rhandleClose = () => {
+    setrAnchorEl(null);
+  };
+  const ropen = Boolean(ranchorEl);
+  const rid = eopen ? 'simple-popover' : undefined;
 
   //addcontact fonksiyonu
   const addcontact = (name, number, token) => {
@@ -190,115 +241,26 @@ const Contacts = () => {
       .then(({ data }) => {
         // apiden alınan rehberleri datas dizisine gönderme
         console.log('data', data);
-
-        data.forEach((element) => {
+        data.contacts.forEach((element) => {
           datas.push([element.name, element.number]);
         });
-
         setUsername(data.username);
-
         console.log('datas', datas);
       })
       .then(() => {
+        //datas içindeki verileri sdatas isimli bir array'e yedekliyoruz. (arama için gerekli)
+        datas.forEach((el) => {
+          sdatas.push([el[0], el[1]]);
+        });
+      })
+      .then(() => {
+        console.log('sdatas', sdatas);
         //datas dizisinin uzunluğu kadar rastgele renk dizisi oluşturma
         datas.forEach(() => {
           color.push(randomColor());
         });
-
-        setSdatas(
-          datas.map((el) => {
-            return el;
-          })
-        );
-
-        setList(
-          //datas içindeki elemanlar ile rehber listesi
-          datas.map((el, c) => {
-            return (
-              <li key={c}>
-                <div
-                  onMouseEnter={() => {}}
-                  style={{
-                    display: 'flex',
-                    margin: 15,
-                    marginLeft: -5,
-                  }}
-                >
-                  <div
-                    style={{
-                      border: '1px solid white',
-                      backgroundColor: color[c],
-                      borderRadius: 20,
-                      height: 40,
-                      width: 40,
-                    }}
-                  >
-                    <p
-                      style={{
-                        textAlign: 'center',
-                        color: 'white',
-                        marginTop: 7,
-                        fontWeight: '500',
-                      }}
-                    >
-                      {el[0][0]}
-                    </p>
-                  </div>
-
-                  <div
-                    style={{
-                      marginLeft: 15,
-                      marginTop: 5,
-                      width: 300,
-                      fontSize: 14,
-                    }}
-                  >
-                    {el[0]}{' '}
-                  </div>
-                  <div style={{ marginTop: 5, fontSize: 13.5, width: 240 }}>
-                    {el[1]}
-                  </div>
-                  {/* rehber düzenleme*/}
-                  <img
-                    alt="edit"
-                    aria-describedby={eid}
-                    src={require('../assets/edit.svg')}
-                    onClick={(event) => {
-                      ehandleClick(event);
-                      setEc(c);
-                      seteName(datas[c][0]);
-                      seteNumber(datas[c][1]);
-                    }}
-                    style={{
-                      height: 15,
-                      width: 15,
-                      marginTop: 7.5,
-                      cursor: 'pointer',
-                    }}
-                  />
-
-                  <img
-                    alt="remove"
-                    aria-describedby={rid}
-                    onClick={(event) => {
-                      rhandleClick(event);
-                      setEc(c);
-                      seteName(datas[c][0]);
-                    }}
-                    src={require('../assets/remove.svg')}
-                    style={{
-                      height: 15,
-                      width: 15,
-                      marginTop: 7.5,
-                      marginLeft: 50,
-                      cursor: 'pointer',
-                    }}
-                  />
-                </div>
-              </li>
-            );
-          })
-        );
+        // liste oluşturucuyu çağırdık
+        makeList(datas);
       })
       .then(() => {
         //sayıcıyı datas uzunluğuna eşitleme
@@ -381,6 +343,7 @@ const Contacts = () => {
           </div>
         </Popover>
       </div>
+
       {/* alt kısım */}
       <div style={{ display: 'flex', height: 25, marginTop: 20 }}>
         <p
@@ -409,6 +372,7 @@ const Contacts = () => {
       >
         Kişiler ({count})
       </p>
+
       {/* kişi listesini görüntülünen kısım */}
       <ul style={{ listStyle: 'none' }}>{list}</ul>
 
@@ -462,6 +426,7 @@ const Contacts = () => {
           </div>
         </div>
       </Popover>
+
       {/* rehber silme açılır pencere*/}
       <Popover
         id={rid}
