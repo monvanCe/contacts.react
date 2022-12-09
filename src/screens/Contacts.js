@@ -10,11 +10,22 @@ const Contacts = () => {
   const token =
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOiI2MzhiODczNTViYjQ2MTljODYzZGEwNDUiLCJpYXQiOjE2NzA1MTY1OTYsImV4cCI6MTY3MDUyMzc5Nn0.KfOsgWB27WYvHOyRCZpggTwyiNg3rbs_8boR8UXU3EU';
   const [username, setUsername] = useState('');
-  const datas = [];
-  const sdatas = [];
+  const [datas] = useState([]);
   const color = [];
   const [list, setList] = useState([]);
   const [count, setCount] = useState(0);
+  const [search, setSearch] = useState('');
+  const [slist, setSlist] = useState([]);
+
+  useEffect(() => {
+    list
+      .filter((el) =>
+        el.props.children.props.children[1].props.children
+          .toLowerCase()
+          .includes(search)
+      )
+      .forEach((filteredName) => console.log('sdatas', slist));
+  }, [search]);
 
   //rastgele renk return eden fonksiyon
   const randomColor = () => {
@@ -25,12 +36,6 @@ const Contacts = () => {
     }
     return color;
   };
-
-  //search bar variableları
-  const handleSearch = (event) => {
-    setSearch(event.target.value);
-  };
-  const [search, setSearch] = useState('');
 
   //diziyi listeleme array'ine importlayan fonksiyon
   const makeList = (arr) => {
@@ -62,7 +67,7 @@ const Contacts = () => {
                     fontWeight: '500',
                   }}
                 >
-                  {el[0][0]}
+                  {el.name[0]}
                 </p>
               </div>
               <div
@@ -73,10 +78,10 @@ const Contacts = () => {
                   fontSize: 14,
                 }}
               >
-                {el[0]}{' '}
+                {el.name}
               </div>
               <div style={{ marginTop: 5, fontSize: 13.5, width: 240 }}>
-                {el[1]}
+                {el.number}
               </div>
               {/* rehber düzenleme*/}
               <img
@@ -86,8 +91,8 @@ const Contacts = () => {
                 onClick={(event) => {
                   ehandleClick(event);
                   setEc(c);
-                  seteName(datas[c][0]);
-                  seteNumber(datas[c][1]);
+                  seteName(datas[c].name);
+                  seteNumber(datas[c].number);
                 }}
                 style={{
                   height: 15,
@@ -103,7 +108,7 @@ const Contacts = () => {
                 onClick={(event) => {
                   rhandleClick(event);
                   setEc(c);
-                  seteName(datas[c][0]);
+                  seteName(datas[c].name);
                 }}
                 src={require('../assets/remove.svg')}
                 style={{
@@ -119,6 +124,7 @@ const Contacts = () => {
         );
       })
     );
+    setCount(list.length);
   };
 
   // addcontact açılır pencere variableları
@@ -242,23 +248,17 @@ const Contacts = () => {
         // apiden alınan rehberleri datas dizisine gönderme
         console.log('data', data);
         data.contacts.forEach((element) => {
-          datas.push([element.name, element.number]);
+          datas.push({ name: element.name, number: element.number });
         });
         setUsername(data.username);
         console.log('datas', datas);
       })
       .then(() => {
-        //datas içindeki verileri sdatas isimli bir array'e yedekliyoruz. (arama için gerekli)
-        datas.forEach((el) => {
-          sdatas.push([el[0], el[1]]);
-        });
-      })
-      .then(() => {
-        console.log('sdatas', sdatas);
         //datas dizisinin uzunluğu kadar rastgele renk dizisi oluşturma
         datas.forEach(() => {
           color.push(randomColor());
         });
+
         // liste oluşturucuyu çağırdık
         makeList(datas);
       })
@@ -289,7 +289,9 @@ const Contacts = () => {
         {/* rehber arama kutucuğu */}
         <TextField
           value={search}
-          onChange={handleSearch}
+          onChange={(e) => {
+            setSearch(e.target.value);
+          }}
           style={{ marginLeft: 25, width: 550 }}
         />
 
