@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Stack } from '@mui/material';
 import { TextField, Button } from '@mui/material';
 import axios from 'axios';
@@ -6,6 +6,36 @@ import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    localStorage.getItem('token')
+      ? navigate('/contacts')
+      : console.log('token mevcut değil');
+  }, []);
+
+  //validasyon variableları
+  const [Remail, setRemail] = useState({
+    value: 'email',
+    status: true,
+  });
+
+  const [Rpassword, setRpassword] = useState({
+    value: 'password',
+    status: true,
+  });
+
+  //validasyonlar fonksiyonları
+  const emailValidator = (email) => {
+    const re = /\S+@\S+\.\S+/;
+    if (!email) return 'Email boş olamaz';
+    if (!re.test(email)) return 'Geçerli bi email adresi giriniz';
+    return '';
+  };
+
+  const passValidator = (password) => {
+    if (!password) return 'Şifre boş olamaz';
+    return '';
+  };
 
   const [visibility, setVisibility] = useState('password');
 
@@ -20,38 +50,43 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleEmail = (event) => {
-    setEmail(event.target.value);
-  };
-
-  const handlePassword = (event) => {
-    setPassword(event.target.value);
-  };
-
   const sendLogin = (e, p) => {
-    axios({
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      method: 'post',
-      url: 'http://localhost:3001/user/login',
-      data: {
-        email: e,
-        password: p,
-      },
-    })
-      .then((response) => {
-        console.log(response.data);
-        if (response.data.status) {
-          localStorage.setItem('token', response.data.token);
-          navigate('/contacts');
-        } else {
-          console.log('giriş başarısız');
-        }
+    if (emailValidator(e) || passValidator(p)) {
+      if (emailValidator(e)) {
+        setRemail({ value: emailValidator(e), status: false });
+      } else {
+        setRemail({ status: true });
+      }
+      if (passValidator(p)) {
+        setRpassword({ value: passValidator(p), status: false });
+      } else {
+        setRpassword({ status: true });
+      }
+    } else {
+      axios({
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        method: 'post',
+        url: 'http://localhost:3001/user/login',
+        data: {
+          email: e,
+          password: p,
+        },
       })
-      .catch((error) => {
-        console.log(error);
-      });
+        .then((response) => {
+          console.log(response.data);
+          if (response.data.status) {
+            localStorage.setItem('token', response.data.token);
+            navigate('/contacts');
+          } else {
+            console.log('giriş başarısız');
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   };
 
   return (
@@ -95,20 +130,26 @@ const Login = () => {
         </p>
         <Stack direction="column">
           <TextField
+            error={!Remail.status}
             id="email"
-            label="Bir E-posta Girin"
+            label={!Remail.status ? Remail.value : 'Email adresinizi girin'}
             style={{ marginTop: 30 }}
             value={email}
-            onChange={handleEmail}
+            onChange={(e) => {
+              setEmail(e.target.value);
+            }}
           />
           <Stack direction="row">
             <TextField
+              error={!Rpassword.status}
               id="passowrd"
-              label="Şifre Oluşturun"
+              label={!Rpassword.status ? Rpassword.value : 'Şifrenizi girin'}
               type={visibility}
               style={{ marginTop: 20, width: 310 }}
               value={password}
-              onChange={handlePassword}
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
             />
             <img
               alt="password-eye"

@@ -1,11 +1,55 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Stack } from '@mui/material';
 import { TextField, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
+  //rotasyon default variable'ı
   const navigate = useNavigate();
+
+  //token verifikasyonu
+  useEffect(() => {
+    localStorage.getItem('token')
+      ? navigate('/contacts')
+      : console.log('token mevcut değil');
+  }, []);
+
+  //validasyon variableları
+  const [Remail, setRemail] = useState({
+    value: 'email',
+    status: true,
+  });
+
+  const [Rusername, setRusername] = useState({
+    value: 'username',
+    status: true,
+  });
+
+  const [Rpassword, setRpassword] = useState({
+    value: 'password',
+    status: true,
+  });
+
+  //validasyonlar fonksiyonları
+  const emailValidator = (email) => {
+    const re = /\S+@\S+\.\S+/;
+    if (!email) return 'Email boş olamaz';
+    if (!re.test(email)) return 'Geçerli bi email adresi giriniz';
+    return '';
+  };
+
+  const passValidator = (password) => {
+    if (!password) return 'Şifre boş olamaz';
+    if (password.length < 5) return 'Şifre en az 5 karakter olmalı ';
+    return '';
+  };
+
+  const usernameValidator = (name) => {
+    if (!name) return 'Username boş olamaz';
+    return '';
+  };
+
   const [visibility, setVisibility] = useState('password');
 
   const changeVisibility = () => {
@@ -20,31 +64,55 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
 
-  const handleEmail = (event) => {
-    setEmail(event.target.value);
-  };
-
-  const handlePassword = (event) => {
-    setPassword(event.target.value);
-  };
-
-  const handleUsername = (event) => {
-    setUsername(event.target.value);
-  };
-
-  const sendRegister = async (e, p, u) => {
-    await axios({
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      method: 'post',
-      url: 'http://localhost:3001/user/register',
-      data: {
-        email: e,
-        username: u,
-        password: p,
-      },
-    }).then((res) => console.log('Res', res.data));
+  const sendRegister = (e, p, u) => {
+    if (emailValidator(e) || usernameValidator(u) || passValidator(p)) {
+      if (emailValidator(e)) {
+        setRemail({ value: emailValidator(e), status: false });
+      } else {
+        setRemail({ status: true });
+      }
+      if (usernameValidator(u)) {
+        setRusername({ value: usernameValidator(u), status: false });
+      } else {
+        setRusername({ status: true });
+      }
+      if (passValidator(p)) {
+        setRpassword({ value: passValidator(p), status: false });
+      } else {
+        setRpassword({ status: true });
+      }
+    } else {
+      axios({
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        method: 'post',
+        url: 'http://localhost:3001/user/register',
+        data: {
+          email: e,
+          username: u,
+          password: p,
+        },
+      }).then((res) => {
+        console.log('Res', res.data);
+        if (res.data.password) {
+          navigate('/login');
+        } else {
+          if (res.data.keyPattern.email) {
+            setRemail({ value: 'Bu email zaten kayıtlı', status: false });
+            setRusername({ status: true });
+            setRpassword({ status: true });
+          } else {
+            res.data.keyPattern.username &&
+              setRusername({
+                value: 'Bu username zaten kayıtlı',
+                status: false,
+              });
+            setRemail({ status: true });
+          }
+        }
+      });
+    }
   };
 
   return (
@@ -87,27 +155,38 @@ const Register = () => {
         </p>
         <Stack direction="column">
           <TextField
+            error={!Remail.status}
             id="email"
-            label="Bir E-posta Girin"
+            label={!Remail.status ? Remail.value : 'lütfen bir email girin'}
             style={{ marginTop: 30 }}
             value={email}
-            onChange={handleEmail}
+            onChange={(e) => {
+              setEmail(e.target.value);
+            }}
           />
           <TextField
+            error={!Rusername.status}
             id="username"
-            label="Bir kullanıcı adı girin"
+            label={
+              !Rusername.status ? Rusername.value : 'Bir kullanıcı adı girin'
+            }
             style={{ marginTop: 30 }}
             value={username}
-            onChange={handleUsername}
+            onChange={(e) => {
+              setUsername(e.target.value);
+            }}
           />
           <Stack direction="row">
             <TextField
+              error={!Rpassword.status}
               id="passowrd"
-              label="Şifre Oluşturun"
+              label={!Rpassword.status ? Rpassword.value : 'Şifre Oluşturun'}
               type={visibility}
               style={{ marginTop: 20, width: 310 }}
               value={password}
-              onChange={handlePassword}
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
             />
             <img
               alt="password-eye"
