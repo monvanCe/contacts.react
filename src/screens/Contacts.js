@@ -205,7 +205,7 @@ const Contacts = () => {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       method: 'post',
-      url: 'http://localhost:3000/user/addcontact',
+      url: 'http://localhost:3001/user/addcontact',
       data: {
         token: token,
         contact: {
@@ -224,7 +224,7 @@ const Contacts = () => {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       method: 'post',
-      url: 'http://localhost:3000/user/updatecontact',
+      url: 'http://localhost:3001/user/updatecontact',
       data: {
         key: c,
         token: token,
@@ -244,7 +244,7 @@ const Contacts = () => {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       method: 'post',
-      url: 'http://localhost:3000/user/deletecontact',
+      url: 'http://localhost:3001/user/deletecontact',
       data: {
         key: c,
         token: token,
@@ -260,7 +260,7 @@ const Contacts = () => {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       method: 'post',
-      url: 'http://localhost:3000/user/showcontacts',
+      url: 'http://localhost:3001/user/showcontacts',
       data: {
         token: token,
       },

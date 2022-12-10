@@ -38,7 +38,7 @@ const Register = () => {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       method: 'post',
-      url: 'http://localhost:3000/user/register',
+      url: 'http://localhost:3001/user/register',
       data: {
         email: e,
         username: u,
