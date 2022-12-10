@@ -2,8 +2,11 @@ import React, { useState } from 'react';
 import { Stack } from '@mui/material';
 import { TextField, Button } from '@mui/material';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
+  const navigate = useNavigate();
+
   const [visibility, setVisibility] = useState('password');
 
   const changeVisibility = () => {
@@ -28,7 +31,6 @@ const Login = () => {
   const sendLogin = (e, p) => {
     axios({
       headers: {
-        'Content-Type': 'application/json',
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       method: 'post',
@@ -40,6 +42,12 @@ const Login = () => {
     })
       .then((response) => {
         console.log(response.data);
+        if (response.data.status) {
+          localStorage.setItem('token', response.data.token);
+          navigate('/contacts');
+        } else {
+          console.log('giriş başarısız');
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -61,6 +69,7 @@ const Login = () => {
     >
       <div style={{ marginTop: '4%', marginLeft: '9%', marginRight: '9%' }}>
         <img
+          alt="logo"
           src={require('../assets/Logo.png')}
           style={{
             height: 70,
@@ -102,6 +111,7 @@ const Login = () => {
               onChange={handlePassword}
             />
             <img
+              alt="password-eye"
               src={
                 visibility === 'password'
                   ? require('../assets/eye-off.png')
@@ -129,7 +139,13 @@ const Login = () => {
             kullanın
           </p>
         </Stack>
-        <Button variant="text" style={{ marginTop: 20 }}>
+        <Button
+          variant="text"
+          style={{ marginTop: 20 }}
+          onClick={() => {
+            navigate('/register');
+          }}
+        >
           <p style={{ fontSize: 11, fontWeight: 700, margin: 'auto' }}>
             Hesabınız yok mu?
           </p>

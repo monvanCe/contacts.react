@@ -1,35 +1,18 @@
-import React, { useEffect, useState } from "react";
-import "bootstrap/dist/css/bootstrap.min.css"
-import { root } from '../index'
-import Login from './Login'
-import Register from './Register'
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
+const Layout = () => {
+  const navigate = useNavigate();
 
-const gologin = () => {
-  root.render(
-      <Login />
+  useEffect(() => {
+    localStorage.getItem('token') ? navigate('/contacts') : navigate('login');
+  }, []);
+
+  return (
+    <div>
+      <p>Giriş Yapılıyor...</p>
+    </div>
   );
-}
+};
 
-const goregister = () => {
-  root.render(
-    <Register />
-  )
-}
-
-
-function Auth() {
-
-    return (
-      <div>
-      <button onClick={gologin}>
-        go to login
-      </button>
-      <button onClick={goregister}>
-        go to Register
-      </button>
-      </div>
-    );
-}
-  
-export default Auth;
+export default Layout;

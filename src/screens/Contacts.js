@@ -7,25 +7,40 @@ import Popover from '@mui/material/Popover';
 
 const Contacts = () => {
   //app'in variableları
-  const token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOiI2MzhiODczNTViYjQ2MTljODYzZGEwNDUiLCJpYXQiOjE2NzA1MTY1OTYsImV4cCI6MTY3MDUyMzc5Nn0.KfOsgWB27WYvHOyRCZpggTwyiNg3rbs_8boR8UXU3EU';
+  const [jwt] = useState(localStorage.getItem('token'));
+  const token = jwt;
   const [username, setUsername] = useState('');
   const [datas] = useState([]);
   const color = [];
-  const [list, setList] = useState([]);
+  const [list] = useState([]);
   const [count, setCount] = useState(0);
   const [search, setSearch] = useState('');
   const [slist, setSlist] = useState([]);
+  const [cache, setCache] = useState([]);
 
-  useEffect(() => {
+  //filtreleme işini yapan fonskyinonumuz
+  const searchFilter = (e) => {
     list
       .filter((el) =>
         el.props.children.props.children[1].props.children
           .toLowerCase()
-          .includes(search)
+          .includes(e)
       )
-      .forEach((filteredName) => console.log('sdatas', slist));
-  }, [search]);
+      .forEach((filteredName) => {
+        cache.push(filteredName);
+      });
+    setSlist(
+      cache.map((el) => {
+        return el;
+      })
+    );
+    setCache([]);
+  };
+
+  //liste her tetiklendiğinde counter'ı değiştiren fonksiyon
+  useEffect(() => {
+    setCount(slist.length);
+  }, [slist]);
 
   //rastgele renk return eden fonksiyon
   const randomColor = () => {
@@ -38,92 +53,90 @@ const Contacts = () => {
   };
 
   //diziyi listeleme array'ine importlayan fonksiyon
-  const makeList = (arr) => {
-    setList(
-      arr.map((el, c) => {
-        return (
-          <li key={c}>
+  const makeList = (arr1, arr2) => {
+    arr1.forEach((el, c) => {
+      arr2.push(
+        <li key={c}>
+          <div
+            style={{
+              display: 'flex',
+              margin: 15,
+              marginLeft: -5,
+            }}
+          >
             <div
               style={{
-                display: 'flex',
-                margin: 15,
-                marginLeft: -5,
+                border: '1px solid white',
+                backgroundColor: color[c],
+                borderRadius: 20,
+                height: 40,
+                width: 40,
               }}
             >
-              <div
+              <p
                 style={{
-                  border: '1px solid white',
-                  backgroundColor: color[c],
-                  borderRadius: 20,
-                  height: 40,
-                  width: 40,
+                  textAlign: 'center',
+                  color: 'white',
+                  marginTop: 7,
+                  fontWeight: '500',
                 }}
               >
-                <p
-                  style={{
-                    textAlign: 'center',
-                    color: 'white',
-                    marginTop: 7,
-                    fontWeight: '500',
-                  }}
-                >
-                  {el.name[0]}
-                </p>
-              </div>
-              <div
-                style={{
-                  marginLeft: 15,
-                  marginTop: 5,
-                  width: 300,
-                  fontSize: 14,
-                }}
-              >
-                {el.name}
-              </div>
-              <div style={{ marginTop: 5, fontSize: 13.5, width: 240 }}>
-                {el.number}
-              </div>
-              {/* rehber düzenleme*/}
-              <img
-                alt="edit"
-                aria-describedby={eid}
-                src={require('../assets/edit.svg')}
-                onClick={(event) => {
-                  ehandleClick(event);
-                  setEc(c);
-                  seteName(datas[c].name);
-                  seteNumber(datas[c].number);
-                }}
-                style={{
-                  height: 15,
-                  width: 15,
-                  marginTop: 7.5,
-                  cursor: 'pointer',
-                }}
-              />
-              {/* rehber silme */}
-              <img
-                alt="remove"
-                aria-describedby={rid}
-                onClick={(event) => {
-                  rhandleClick(event);
-                  setEc(c);
-                  seteName(datas[c].name);
-                }}
-                src={require('../assets/remove.svg')}
-                style={{
-                  height: 15,
-                  width: 15,
-                  marginTop: 7.5,
-                  marginLeft: 50,
-                  cursor: 'pointer',
-                }}
-              />
+                {el.name[0]}
+              </p>
             </div>
-          </li>
-        );
-      })
-    );
+            <div
+              style={{
+                marginLeft: 15,
+                marginTop: 5,
+                width: 300,
+                fontSize: 14,
+              }}
+            >
+              {el.name}
+            </div>
+            <div style={{ marginTop: 5, fontSize: 13.5, width: 240 }}>
+              {el.number}
+            </div>
+            {/* rehber düzenleme*/}
+            <img
+              alt="edit"
+              aria-describedby={eid}
+              src={require('../assets/edit.svg')}
+              onClick={(event) => {
+                ehandleClick(event);
+                setEc(c);
+                seteName(datas[c].name);
+                seteNumber(datas[c].number);
+              }}
+              style={{
+                height: 15,
+                width: 15,
+                marginTop: 7.5,
+                cursor: 'pointer',
+              }}
+            />
+            {/* rehber silme */}
+            <img
+              alt="remove"
+              aria-describedby={rid}
+              onClick={(event) => {
+                rhandleClick(event);
+                setEc(c);
+                seteName(datas[c].name);
+              }}
+              src={require('../assets/remove.svg')}
+              style={{
+                height: 15,
+                width: 15,
+                marginTop: 7.5,
+                marginLeft: 50,
+                cursor: 'pointer',
+              }}
+            />
+          </div>
+        </li>
+      );
+    });
     setCount(list.length);
   };
 
@@ -260,11 +273,14 @@ const Contacts = () => {
         });
 
         // liste oluşturucuyu çağırdık
-        makeList(datas);
+        makeList(datas, list);
+
+        makeList(datas, slist);
       })
       .then(() => {
         //sayıcıyı datas uzunluğuna eşitleme
-        setCount(datas.length);
+        setCount(slist.length);
+        console.log('list', list);
       });
   }, []);
 
@@ -291,6 +307,7 @@ const Contacts = () => {
           value={search}
           onChange={(e) => {
             setSearch(e.target.value);
+            searchFilter(e.target.value);
           }}
           style={{ marginLeft: 25, width: 550 }}
         />
@@ -376,7 +393,7 @@ const Contacts = () => {
       </p>
 
       {/* kişi listesini görüntülünen kısım */}
-      <ul style={{ listStyle: 'none' }}>{list}</ul>
+      <ul style={{ listStyle: 'none' }}>{slist}</ul>
 
       {/* rehber düzenleme açılır pencere*/}
       <Popover

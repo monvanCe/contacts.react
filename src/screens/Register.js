@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { Stack } from '@mui/material';
 import { TextField, Button } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
+  const navigate = useNavigate();
   const [visibility, setVisibility] = useState('password');
 
   const changeVisibility = () => {
@@ -33,7 +35,6 @@ const Register = () => {
   const sendRegister = async (e, p, u) => {
     await axios({
       headers: {
-        'Content-Type': 'application/json',
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       method: 'post',
@@ -60,6 +61,7 @@ const Register = () => {
     >
       <div style={{ marginTop: '4%', marginLeft: '9%', marginRight: '9%' }}>
         <img
+          alt="logo"
           src={require('../assets/Logo.png')}
           style={{
             height: 70,
@@ -108,6 +110,7 @@ const Register = () => {
               onChange={handlePassword}
             />
             <img
+              alt="password-eye"
               src={
                 visibility === 'password'
                   ? require('../assets/eye-off.png')
@@ -137,7 +140,13 @@ const Register = () => {
             </Button>
           </p>
         </Stack>
-        <Button variant="text" style={{ marginTop: 20 }}>
+        <Button
+          variant="text"
+          style={{ marginTop: 20 }}
+          onClick={() => {
+            navigate('/login');
+          }}
+        >
           <p style={{ fontSize: 11, fontWeight: 700, margin: 'auto' }}>
             Hesabınız var mı?
           </p>
