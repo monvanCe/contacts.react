@@ -4,9 +4,11 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import { Button, TextField } from '@mui/material';
 import Popover from '@mui/material/Popover';
+import { useNavigate } from 'react-router-dom';
 
 const Contacts = () => {
   //app'in variableları
+  const navigate = useNavigate();
   const [jwt] = useState(localStorage.getItem('token'));
   const token = jwt;
   const [username, setUsername] = useState('');
@@ -35,6 +37,12 @@ const Contacts = () => {
       })
     );
     setCache([]);
+  };
+
+  //çıkış yapan fonksiyonumuz
+  const logout = () => {
+    localStorage.removeItem('token');
+    navigate('/');
   };
 
   //liste her tetiklendiğinde counter'ı değiştiren fonksiyon
@@ -376,9 +384,17 @@ const Contacts = () => {
         >
           Rehber: {username}
         </p>
-        <p style={{ fontSize: 15, fontWeight: 500, color: '#707070' }}>
+        <p
+          style={{
+            fontSize: 15,
+            fontWeight: 500,
+            color: '#707070',
+            width: 275,
+          }}
+        >
           Telefon numarası
         </p>
+        <Button onClick={logout}>Çıkış Yap</Button>
       </div>
       <hr style={{ margin: 15, color: '#878787' }} />
       <p
