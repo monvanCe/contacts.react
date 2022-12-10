@@ -5,8 +5,15 @@ import { useEffect } from 'react';
 import { Button, TextField } from '@mui/material';
 import Popover from '@mui/material/Popover';
 import { useNavigate } from 'react-router-dom';
+import { isMobile } from 'react-device-detect';
 
 const Contacts = () => {
+  useEffect(() => {
+    if (isMobile) {
+      document.body.style.zoom = '50%';
+    }
+  }, []);
+
   //app'in variableları
   const navigate = useNavigate();
   const [jwt] = useState(localStorage.getItem('token'));

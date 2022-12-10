@@ -3,8 +3,15 @@ import axios from 'axios';
 import { Stack } from '@mui/material';
 import { TextField, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { isMobile } from 'react-device-detect';
 
 const Register = () => {
+  useEffect(() => {
+    if (isMobile) {
+      document.body.style.zoom = '80%';
+    }
+  }, []);
+
   //rotasyon default variable'ı
   const navigate = useNavigate();
 
