@@ -80,7 +80,15 @@ const Login = () => {
             localStorage.setItem('token', response.data.token);
             navigate('/contacts');
           } else {
-            console.log('giriş başarısız');
+            if (
+              response.data.message === 'Autantication faild, user not found'
+            ) {
+              setRemail({ value: 'Bu email kayıtlı değil', status: false });
+              setRpassword({ status: true });
+            } else {
+              setRemail({ status: true });
+              setRpassword({ value: 'Şifre Yanlış', status: false });
+            }
           }
         })
         .catch((error) => {
