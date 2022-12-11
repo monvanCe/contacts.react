@@ -10,7 +10,7 @@ import { isMobile } from 'react-device-detect';
 const Contacts = () => {
   useEffect(() => {
     if (isMobile) {
-      document.body.style.zoom = '50%';
+      isMobile && console.log('telefon algılandı contacts');
     }
   }, []);
 
@@ -80,36 +80,70 @@ const Contacts = () => {
             }}
           >
             <div
-              style={{
-                border: '1px solid white',
-                backgroundColor: color[c],
-                borderRadius: 20,
-                height: 40,
-                width: 40,
-              }}
+              style={
+                isMobile
+                  ? {
+                      border: '1px solid white',
+                      backgroundColor: color[c],
+                      borderRadius: 15,
+                      height: 30,
+                      width: 30,
+                    }
+                  : {
+                      border: '1px solid white',
+                      backgroundColor: color[c],
+                      borderRadius: 20,
+                      height: 40,
+                      width: 40,
+                    }
+              }
             >
               <p
-                style={{
-                  textAlign: 'center',
-                  color: 'white',
-                  marginTop: 7,
-                  fontWeight: '500',
-                }}
+                style={
+                  isMobile
+                    ? {
+                        textAlign: 'center',
+                        color: 'white',
+                        marginTop: 2.5,
+                        fontWeight: '500',
+                      }
+                    : {
+                        textAlign: 'center',
+                        color: 'white',
+                        marginTop: 7,
+                        fontWeight: '500',
+                      }
+                }
               >
                 {el.name[0]}
               </p>
             </div>
             <div
-              style={{
-                marginLeft: 15,
-                marginTop: 5,
-                width: 300,
-                fontSize: 14,
-              }}
+              style={
+                isMobile
+                  ? {
+                      marginLeft: 15,
+                      marginTop: 5,
+                      width: 100,
+                      fontSize: 12,
+                    }
+                  : {
+                      marginLeft: 15,
+                      marginTop: 5,
+                      width: 300,
+                      fontSize: 14,
+                    }
+              }
             >
               {el.name}
             </div>
-            <div style={{ marginTop: 5, fontSize: 13.5, width: 240 }}>
+            <div
+              style={
+                isMobile
+                  ? { marginTop: 5, fontSize: 12, width: 115 }
+                  : { marginTop: 5, fontSize: 13.5, width: 240 }
+              }
+            >
               {el.number}
             </div>
             {/* rehber düzenleme*/}
@@ -123,12 +157,21 @@ const Contacts = () => {
                 seteName(datas[c].name);
                 seteNumber(datas[c].number);
               }}
-              style={{
-                height: 15,
-                width: 15,
-                marginTop: 7.5,
-                cursor: 'pointer',
-              }}
+              style={
+                isMobile
+                  ? {
+                      height: 12,
+                      width: 12,
+                      marginTop: 7.5,
+                      cursor: 'pointer',
+                    }
+                  : {
+                      height: 15,
+                      width: 15,
+                      marginTop: 7.5,
+                      cursor: 'pointer',
+                    }
+              }
             />
             {/* rehber silme */}
             <img
@@ -140,13 +183,23 @@ const Contacts = () => {
                 seteName(datas[c].name);
               }}
               src={require('../assets/remove.svg')}
-              style={{
-                height: 15,
-                width: 15,
-                marginTop: 7.5,
-                marginLeft: 50,
-                cursor: 'pointer',
-              }}
+              style={
+                isMobile
+                  ? {
+                      height: 12,
+                      width: 12,
+                      marginTop: 7.5,
+                      marginLeft: 20,
+                      cursor: 'pointer',
+                    }
+                  : {
+                      height: 15,
+                      width: 15,
+                      marginTop: 7.5,
+                      marginLeft: 50,
+                      cursor: 'pointer',
+                    }
+              }
             />
           </div>
         </li>
@@ -267,19 +320,20 @@ const Contacts = () => {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       method: 'post',
-      url: 'http://localhost:3001/user/showcontacts',
+      url: 'http://192.168.225.233:3001/user/showcontacts',
       data: {
-        token: token,
+        token:
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOiI2MzhiODczNTViYjQ2MTljODYzZGEwNDUiLCJpYXQiOjE2NzA3MjcwMjIsImV4cCI6MTY3MDcyNzA4Mn0.KdWuV845OVlNsLV1X0mD7pI16nAusHb8Hs5aPKmLYFM',
       },
     })
       .then(({ data }) => {
         // apiden alınan rehberleri datas dizisine gönderme
-        console.log('data', data);
+        //console.log('data', data);
         data.contacts.forEach((element) => {
           datas.push({ name: element.name, number: element.number });
         });
         setUsername(data.username);
-        console.log('datas', datas);
+        //console.log('datas', datas);
       })
       .then(() => {
         //datas dizisinin uzunluğu kadar rastgele renk dizisi oluşturma
@@ -295,36 +349,56 @@ const Contacts = () => {
       .then(() => {
         //sayıcıyı datas uzunluğuna eşitleme
         setCount(slist.length);
-        console.log('list', list);
+        //console.log('list', list);
       });
   }, []);
 
   return (
     <div
-      style={{
-        width: 750,
-        borderRadius: 8,
-        border: '1px solid #dadce0',
-        marginLeft: 'auto',
-        marginRight: 'auto',
-        marginTop: 50,
-      }}
+      style={
+        isMobile
+          ? {
+              width: 350,
+              borderRadius: 8,
+              border: '1px solid #dadce0',
+              marginLeft: 'auto',
+              marginRight: 'auto',
+              marginTop: 50,
+            }
+          : {
+              width: 750,
+              borderRadius: 8,
+              border: '1px solid #dadce0',
+              marginLeft: 'auto',
+              marginRight: 'auto',
+              marginTop: 50,
+            }
+      }
     >
       <div direction="column" style={{ marginTop: 20 }}>
         <img
           alt="logo"
           src={require('../assets/Logo.png')}
-          style={{ height: 58, width: 58, marginLeft: 25 }}
+          style={
+            isMobile
+              ? { height: 40, width: 40, marginLeft: 25 }
+              : { height: 58, width: 58, marginLeft: 25 }
+          }
         />
 
         {/* rehber arama kutucuğu */}
         <TextField
+          size={isMobile ? 'small' : 'normal'}
           value={search}
           onChange={(e) => {
             setSearch(e.target.value);
             searchFilter(e.target.value);
           }}
-          style={{ marginLeft: 25, width: 550 }}
+          style={
+            isMobile
+              ? { marginLeft: 25, width: 190 }
+              : { marginLeft: 25, width: 550 }
+          }
         />
 
         {/* rehber ekleme kısmı buton özellikleri  */}
@@ -333,7 +407,11 @@ const Contacts = () => {
           src={require('../assets/add.svg')}
           aria-describedby={aid}
           onClick={ahandleClick}
-          style={{ height: 30, width: 30, marginLeft: 20, cursor: 'pointer' }}
+          style={
+            isMobile
+              ? { height: 25, width: 25, marginLeft: 20, cursor: 'pointer' }
+              : { height: 30, width: 30, marginLeft: 20, cursor: 'pointer' }
+          }
         ></img>
         {/* rehber ekleme kısmı açılır pencere */}
         <Popover
@@ -381,33 +459,57 @@ const Contacts = () => {
       {/* alt kısım */}
       <div style={{ display: 'flex', height: 25, marginTop: 20 }}>
         <p
-          style={{
-            fontSize: 15,
-            fontWeight: 500,
-            width: 325,
-            color: '#707070',
-            marginLeft: 25,
-          }}
+          style={
+            isMobile
+              ? {
+                  fontSize: 12,
+                  fontWeight: 500,
+                  width: 125,
+                  color: '#707070',
+                  marginLeft: 25,
+                }
+              : {
+                  fontSize: 15,
+                  fontWeight: 500,
+                  width: 340,
+                  color: '#707070',
+                  marginLeft: 25,
+                }
+          }
         >
           Rehber: {username}
         </p>
         <p
-          style={{
-            fontSize: 15,
-            fontWeight: 500,
-            color: '#707070',
-            width: 275,
-          }}
+          style={
+            isMobile
+              ? {
+                  fontSize: 12,
+                  fontWeight: 500,
+                  color: '#707070',
+                  width: 115,
+                }
+              : {
+                  fontSize: 15,
+                  fontWeight: 500,
+                  color: '#707070',
+                  width: 260,
+                }
+          }
         >
           Telefon numarası
         </p>
-        <Button onClick={logout}>Çıkış Yap</Button>
+        <Button
+          onClick={logout}
+          style={isMobile ? { fontSize: 11, marginTop: -5 } : {}}
+        >
+          Çıkış Yap
+        </Button>
       </div>
       <hr style={{ margin: 15, color: '#878787' }} />
       <p
         style={{
           marginLeft: 25,
-          fontSize: 14,
+          fontSize: 12,
           color: '#5f6368',
           fontWeight: 500,
         }}

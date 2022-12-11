@@ -10,6 +10,7 @@ const Login = () => {
     if (isMobile) {
       document.body.style.zoom = '80%';
     }
+    console.log('telefon algılandı login');
   }, []);
 
   const navigate = useNavigate();

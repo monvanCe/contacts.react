@@ -10,6 +10,7 @@ const Register = () => {
     if (isMobile) {
       document.body.style.zoom = '80%';
     }
+    console.log('telefon algılandı register');
   }, []);
 
   //rotasyon default variable'ı
@@ -27,12 +28,10 @@ const Register = () => {
     value: 'email',
     status: true,
   });
-
   const [Rusername, setRusername] = useState({
     value: 'username',
     status: true,
   });
-
   const [Rpassword, setRpassword] = useState({
     value: 'password',
     status: true,
@@ -45,18 +44,17 @@ const Register = () => {
     if (!re.test(email)) return 'Geçerli bi email adresi giriniz';
     return '';
   };
-
   const passValidator = (password) => {
     if (!password) return 'Şifre boş olamaz';
     if (password.length < 5) return 'Şifre en az 5 karakter olmalı ';
     return '';
   };
-
   const usernameValidator = (name) => {
     if (!name) return 'Username boş olamaz';
     return '';
   };
 
+  //app'in variableları
   const [visibility, setVisibility] = useState('password');
 
   const changeVisibility = () => {
@@ -71,6 +69,7 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
 
+  //register fonksiyonu
   const sendRegister = (e, p, u) => {
     if (emailValidator(e) || usernameValidator(u) || passValidator(p)) {
       if (emailValidator(e)) {
