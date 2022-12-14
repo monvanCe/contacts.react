@@ -19,8 +19,8 @@ const Contacts = () => {
   const [jwt] = useState(localStorage.getItem('token'));
   const token = jwt;
   const [username, setUsername] = useState('');
-  const [datas, setDatas] = useState([]);
-  const [list, setList] = useState([]);
+  const [datas] = useState([]);
+  const [list] = useState([]);
   const [count, setCount] = useState(0);
   const [search, setSearch] = useState('');
   const [slist, setSlist] = useState([]);
