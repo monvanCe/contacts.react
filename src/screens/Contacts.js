@@ -322,8 +322,7 @@ const Contacts = () => {
       method: 'post',
       url: 'http://localhost:3001/user/showcontacts',
       data: {
-        token:
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOiI2MzhiODczNTViYjQ2MTljODYzZGEwNDUiLCJpYXQiOjE2NzA3MjcwMjIsImV4cCI6MTY3MDcyNzA4Mn0.KdWuV845OVlNsLV1X0mD7pI16nAusHb8Hs5aPKmLYFM',
+        token: token,
       },
     })
       .then(({ data }) => {
