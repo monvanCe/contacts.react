@@ -19,9 +19,8 @@ const Contacts = () => {
   const [jwt] = useState(localStorage.getItem('token'));
   const token = jwt;
   const [username, setUsername] = useState('');
-  const [datas] = useState([]);
-  const color = [];
-  const [list] = useState([]);
+  const [datas, setDatas] = useState([]);
+  const [list, setList] = useState([]);
   const [count, setCount] = useState(0);
   const [search, setSearch] = useState('');
   const [slist, setSlist] = useState([]);
@@ -68,143 +67,141 @@ const Contacts = () => {
   };
 
   //diziyi listeleme array'ine importlayan fonksiyon
-  const makeList = (arr1, arr2) => {
-    arr1.forEach((el, c) => {
-      arr2.push(
-        <li key={c}>
+  const makeList = (el, c) => {
+    return (
+      <li key={c}>
+        <div
+          style={{
+            display: 'flex',
+            margin: 15,
+            marginLeft: -5,
+          }}
+        >
           <div
-            style={{
-              display: 'flex',
-              margin: 15,
-              marginLeft: -5,
-            }}
+            style={
+              isMobile
+                ? {
+                    border: '1px solid white',
+                    backgroundColor: randomColor(),
+                    borderRadius: 15,
+                    height: 30,
+                    width: 30,
+                  }
+                : {
+                    border: '1px solid white',
+                    backgroundColor: randomColor(),
+                    borderRadius: 20,
+                    height: 40,
+                    width: 40,
+                  }
+            }
           >
-            <div
+            <p
               style={
                 isMobile
                   ? {
-                      border: '1px solid white',
-                      backgroundColor: color[c],
-                      borderRadius: 15,
-                      height: 30,
-                      width: 30,
+                      textAlign: 'center',
+                      color: 'white',
+                      marginTop: 2.5,
+                      fontWeight: '500',
                     }
                   : {
-                      border: '1px solid white',
-                      backgroundColor: color[c],
-                      borderRadius: 20,
-                      height: 40,
-                      width: 40,
+                      textAlign: 'center',
+                      color: 'white',
+                      marginTop: 7,
+                      fontWeight: '500',
                     }
               }
             >
-              <p
-                style={
-                  isMobile
-                    ? {
-                        textAlign: 'center',
-                        color: 'white',
-                        marginTop: 2.5,
-                        fontWeight: '500',
-                      }
-                    : {
-                        textAlign: 'center',
-                        color: 'white',
-                        marginTop: 7,
-                        fontWeight: '500',
-                      }
-                }
-              >
-                {el.name[0]}
-              </p>
-            </div>
-            <div
-              style={
-                isMobile
-                  ? {
-                      marginLeft: 15,
-                      marginTop: 5,
-                      width: 100,
-                      fontSize: 12,
-                    }
-                  : {
-                      marginLeft: 15,
-                      marginTop: 5,
-                      width: 300,
-                      fontSize: 14,
-                    }
-              }
-            >
-              {el.name}
-            </div>
-            <div
-              style={
-                isMobile
-                  ? { marginTop: 5, fontSize: 12, width: 115 }
-                  : { marginTop: 5, fontSize: 13.5, width: 240 }
-              }
-            >
-              {el.number}
-            </div>
-            {/* rehber düzenleme*/}
-            <img
-              alt="edit"
-              aria-describedby={eid}
-              src={require('../assets/edit.svg')}
-              onClick={(event) => {
-                ehandleClick(event);
-                setEc(c);
-                seteName(datas[c].name);
-                seteNumber(datas[c].number);
-              }}
-              style={
-                isMobile
-                  ? {
-                      height: 12,
-                      width: 12,
-                      marginTop: 7.5,
-                      cursor: 'pointer',
-                    }
-                  : {
-                      height: 15,
-                      width: 15,
-                      marginTop: 7.5,
-                      cursor: 'pointer',
-                    }
-              }
-            />
-            {/* rehber silme */}
-            <img
-              alt="remove"
-              aria-describedby={rid}
-              onClick={(event) => {
-                rhandleClick(event);
-                setEc(c);
-                seteName(datas[c].name);
-              }}
-              src={require('../assets/remove.svg')}
-              style={
-                isMobile
-                  ? {
-                      height: 12,
-                      width: 12,
-                      marginTop: 7.5,
-                      marginLeft: 20,
-                      cursor: 'pointer',
-                    }
-                  : {
-                      height: 15,
-                      width: 15,
-                      marginTop: 7.5,
-                      marginLeft: 50,
-                      cursor: 'pointer',
-                    }
-              }
-            />
+              {el.name[0]}
+            </p>
           </div>
-        </li>
-      );
-    });
+          <div
+            style={
+              isMobile
+                ? {
+                    marginLeft: 15,
+                    marginTop: 5,
+                    width: 100,
+                    fontSize: 12,
+                  }
+                : {
+                    marginLeft: 15,
+                    marginTop: 5,
+                    width: 300,
+                    fontSize: 14,
+                  }
+            }
+          >
+            {el.name}
+          </div>
+          <div
+            style={
+              isMobile
+                ? { marginTop: 5, fontSize: 12, width: 115 }
+                : { marginTop: 5, fontSize: 13.5, width: 240 }
+            }
+          >
+            {el.number}
+          </div>
+          {/* rehber düzenleme*/}
+          <img
+            alt="edit"
+            aria-describedby={eid}
+            src={require('../assets/edit.svg')}
+            onClick={(event) => {
+              ehandleClick(event);
+              setEc(c);
+              seteName(el.name);
+              seteNumber(el.number);
+            }}
+            style={
+              isMobile
+                ? {
+                    height: 12,
+                    width: 12,
+                    marginTop: 7.5,
+                    cursor: 'pointer',
+                  }
+                : {
+                    height: 15,
+                    width: 15,
+                    marginTop: 7.5,
+                    cursor: 'pointer',
+                  }
+            }
+          />
+          {/* rehber silme */}
+          <img
+            alt="remove"
+            aria-describedby={rid}
+            onClick={(event) => {
+              rhandleClick(event);
+              setEc(c);
+              seteName(el.name);
+            }}
+            src={require('../assets/remove.svg')}
+            style={
+              isMobile
+                ? {
+                    height: 12,
+                    width: 12,
+                    marginTop: 7.5,
+                    marginLeft: 20,
+                    cursor: 'pointer',
+                  }
+                : {
+                    height: 15,
+                    width: 15,
+                    marginTop: 7.5,
+                    marginLeft: 50,
+                    cursor: 'pointer',
+                  }
+            }
+          />
+        </div>
+      </li>
+    );
     setCount(list.length);
   };
 
@@ -273,8 +270,12 @@ const Contacts = () => {
           number: number,
         },
       },
-    }).then((res) => console.log('Res', res.data));
-    window.location.reload();
+    })
+      .then(setaAnchorEl(null))
+      .then(
+        list.push(makeList({ name: name, number: number }, list.length)),
+        slist.push(makeList({ name: name, number: number }, slist.length))
+      );
   };
 
   //editcontact fonksiyonu
@@ -293,8 +294,12 @@ const Contacts = () => {
           number: number,
         },
       },
-    }).then((res) => console.log('Res', res.data));
-    window.location.reload();
+    })
+      .then((res) => console.log('Res', res.data), seteAnchorEl(null))
+      .then(
+        list.splice(c, 1, makeList({ name: name, number: number }, c)),
+        slist.splice(c, 1, makeList({ name: name, number: number }, c))
+      );
   };
 
   //removecontact fonksiyonu
@@ -309,8 +314,10 @@ const Contacts = () => {
         key: c,
         token: token,
       },
-    }).then((res) => console.log('Res', res.data));
-    window.location.reload();
+    })
+      .then((res) => console.log('Res', res.data))
+      .then(list.splice(c, 1), setrAnchorEl(null), slist.splice(c, 1))
+      .then(setCount(slist.length));
   };
 
   //api çekme
@@ -335,15 +342,13 @@ const Contacts = () => {
         //console.log('datas', datas);
       })
       .then(() => {
-        //datas dizisinin uzunluğu kadar rastgele renk dizisi oluşturma
-        datas.forEach(() => {
-          color.push(randomColor());
+        datas.forEach((el, c) => {
+          list.push(makeList(el, c));
         });
 
-        // liste oluşturucuyu çağırdık
-        makeList(datas, list);
-
-        makeList(datas, slist);
+        datas.forEach((el, c) => {
+          slist.push(makeList(el, c));
+        });
       })
       .then(() => {
         //sayıcıyı datas uzunluğuna eşitleme
