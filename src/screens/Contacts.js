@@ -51,11 +51,6 @@ const Contacts = () => {
     navigate('/');
   };
 
-  //liste her tetiklendiğinde counter'ı değiştiren fonksiyon
-  useEffect(() => {
-    setCount(slist.length);
-  }, [slist]);
-
   //rastgele renk return eden fonksiyon
   const randomColor = () => {
     var letters = '0123456789ABCDEF';
@@ -127,7 +122,7 @@ const Contacts = () => {
                   }
                 : {
                     marginLeft: 15,
-                    marginTop: 5,
+                    marginTop: 10,
                     width: 300,
                     fontSize: 14,
                   }
@@ -202,7 +197,6 @@ const Contacts = () => {
         </div>
       </li>
     );
-    setCount(list.length);
   };
 
   // addcontact açılır pencere variableları
@@ -274,7 +268,8 @@ const Contacts = () => {
       .then(setaAnchorEl(null))
       .then(
         list.push(makeList({ name: name, number: number }, list.length)),
-        slist.push(makeList({ name: name, number: number }, slist.length))
+        slist.push(makeList({ name: name, number: number }, slist.length)),
+        setCount(slist.length)
       );
   };
 
@@ -298,7 +293,8 @@ const Contacts = () => {
       .then((res) => console.log('Res', res.data), seteAnchorEl(null))
       .then(
         list.splice(c, 1, makeList({ name: name, number: number }, c)),
-        slist.splice(c, 1, makeList({ name: name, number: number }, c))
+        slist.splice(c, 1, makeList({ name: name, number: number }, c)),
+        setCount(slist.length)
       );
   };
 
@@ -334,12 +330,11 @@ const Contacts = () => {
     })
       .then(({ data }) => {
         // apiden alınan rehberleri datas dizisine gönderme
-        //console.log('data', data);
         data.contacts.forEach((element) => {
           datas.push({ name: element.name, number: element.number });
         });
+
         setUsername(data.username);
-        //console.log('datas', datas);
       })
       .then(() => {
         datas.forEach((el, c) => {
@@ -353,7 +348,6 @@ const Contacts = () => {
       .then(() => {
         //sayıcıyı datas uzunluğuna eşitleme
         setCount(slist.length);
-        //console.log('list', list);
       });
   }, []);
 
