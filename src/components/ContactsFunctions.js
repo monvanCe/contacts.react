@@ -114,7 +114,7 @@ export const AddContactModal = (props) => {
       centered
     >
       <Modal.Header>
-        <h3>Kişinizi Düzenleyin</h3>
+        <h3>Kişi Ekleyin</h3>
       </Modal.Header>
       <Modal.Body>
         <div direction="row" style={{ display: 'flex' }}>
@@ -280,14 +280,27 @@ const editcontactfunction = (name, number, props) => {
     props.list.splice(
       props.c,
       1,
-      makeList({ name: name, number: number }, props.c)
+      makeList(
+        { name: name, number: number },
+        props.c,
+        props.setEshow,
+        props.setC,
+        props.setName,
+        props.setNumber
+      )
     ),
     props.slist.splice(
       props.c,
       1,
-      makeList({ name: name, number: number }, props.c)
-    ),
-    props.setCount(props.slist.length)
+      makeList(
+        { name: name, number: number },
+        props.c,
+        props.setEshow,
+        props.setC,
+        props.setName,
+        props.setNumber
+      )
+    )
   );
 };
 

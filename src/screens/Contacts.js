@@ -161,6 +161,9 @@ const Contacts = () => {
         slist={slist}
         setCount={setCount}
         c={c}
+        setC={setC}
+        setName={setName}
+        setNumber={setNumber}
         name={name}
         number={number}
         token={token}
