@@ -1,21 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Button, TextField } from '@mui/material';
-import Popover from '@mui/material/Popover';
 import { useNavigate } from 'react-router-dom';
 import { isMobile } from 'react-device-detect';
 
-const Contacts = () => {
-  useEffect(() => {
-    if (isMobile) {
-      isMobile && console.log('telefon algılandı contacts');
-    }
-  }, []);
+import {
+  AddContactModal,
+  EditContactModal,
+  RemoveContactModal,
+  LogoutModal,
+} from '../components/ContactsFunctions';
 
+import { contactsStyles } from '../components/Styles';
+
+const Contacts = () => {
   //app'in variableları
   const navigate = useNavigate();
-  const [jwt] = useState(localStorage.getItem('token'));
-  const token = jwt;
+  const [token] = useState(localStorage.getItem('token'));
   const [username, setUsername] = useState('');
   const [datas] = useState([]);
   const [list] = useState([]);
@@ -23,6 +24,20 @@ const Contacts = () => {
   const [search, setSearch] = useState('');
   const [slist, setSlist] = useState([]);
   const [cache, setCache] = useState([]);
+
+  //token yoksa giriş ekranına gönder
+  useEffect(() => {
+    !localStorage.getItem('token') && navigate('/login');
+  }, []);
+
+  //Modallerin(açılır pencereler) variableları
+  const [ashow, setAshow] = useState(false);
+  const [eshow, setEshow] = useState(false);
+  const [rshow, setRshow] = useState(false);
+  const [lshow, setLshow] = useState(false);
+  const [c, setC] = useState();
+  const [name, setName] = useState('');
+  const [number, setNumber] = useState('');
 
   //filtreleme işini yapan fonskyinonumuz
   const searchFilter = (e) => {
@@ -41,12 +56,6 @@ const Contacts = () => {
       })
     );
     setCache([]);
-  };
-
-  //çıkış yapan fonksiyonumuz
-  const logout = () => {
-    localStorage.removeItem('token');
-    navigate('/');
   };
 
   //rastgele renk return eden fonksiyon
@@ -73,245 +82,42 @@ const Contacts = () => {
           <div
             style={
               isMobile
-                ? {
-                    border: '1px solid white',
-                    backgroundColor: randomColor(),
-                    borderRadius: 15,
-                    height: 30,
-                    width: 30,
-                  }
-                : {
-                    border: '1px solid white',
-                    backgroundColor: randomColor(),
-                    borderRadius: 20,
-                    height: 40,
-                    width: 40,
-                  }
+                ? { backgroundColor: randomColor(), borderRadius: 30 }
+                : { backgroundColor: randomColor(), borderRadius: 40 }
             }
           >
-            <p
-              style={
-                isMobile
-                  ? {
-                      textAlign: 'center',
-                      color: 'white',
-                      marginTop: 2.5,
-                      fontWeight: '500',
-                    }
-                  : {
-                      textAlign: 'center',
-                      color: 'white',
-                      marginTop: 7,
-                      fontWeight: '500',
-                    }
-              }
-            >
-              {el.name[0]}
-            </p>
+            <div style={contactsStyles.brand}>
+              <p style={contactsStyles.brandtext}>{el.name[0]}</p>
+            </div>
           </div>
-          <div
-            style={
-              isMobile
-                ? {
-                    marginLeft: 15,
-                    marginTop: 5,
-                    width: 100,
-                    fontSize: 12,
-                  }
-                : {
-                    marginLeft: 15,
-                    marginTop: 10,
-                    width: 300,
-                    fontSize: 14,
-                  }
-            }
-          >
-            {el.name}
-          </div>
-          <div
-            style={
-              isMobile
-                ? { marginTop: 5, fontSize: 12, width: 115 }
-                : { marginTop: 5, fontSize: 13.5, width: 240 }
-            }
-          >
-            {el.number}
-          </div>
+          <div style={contactsStyles.name}>{el.name}</div>
+          <div style={contactsStyles.number}>{el.number}</div>
           {/* rehber düzenleme*/}
           <img
             alt="edit"
-            aria-describedby={eid}
             src={require('../assets/edit.svg')}
-            onClick={(event) => {
-              ehandleClick(event);
-              setEc(c);
-              seteName(el.name);
-              seteNumber(el.number);
+            onClick={() => {
+              setEshow(true);
+              setC(c);
+              setName(el.name);
+              setNumber(el.number);
             }}
-            style={
-              isMobile
-                ? {
-                    height: 12,
-                    width: 12,
-                    marginTop: 7.5,
-                    cursor: 'pointer',
-                  }
-                : {
-                    height: 15,
-                    width: 15,
-                    marginTop: 7.5,
-                    cursor: 'pointer',
-                  }
-            }
+            style={contactsStyles.edit}
           />
           {/* rehber silme */}
           <img
             alt="remove"
-            aria-describedby={rid}
-            onClick={(event) => {
-              rhandleClick(event);
-              setEc(c);
-              seteName(el.name);
+            onClick={() => {
+              setRshow(true);
+              setC(c);
+              setName(el.name);
             }}
             src={require('../assets/remove.svg')}
-            style={
-              isMobile
-                ? {
-                    height: 12,
-                    width: 12,
-                    marginTop: 7.5,
-                    marginLeft: 20,
-                    cursor: 'pointer',
-                  }
-                : {
-                    height: 15,
-                    width: 15,
-                    marginTop: 7.5,
-                    marginLeft: 50,
-                    cursor: 'pointer',
-                  }
-            }
+            style={contactsStyles.remove}
           />
         </div>
       </li>
     );
-  };
-
-  // addcontact açılır pencere variableları
-  const [aanchorEl, setaAnchorEl] = React.useState(null);
-  const ahandleClick = (event) => {
-    setaAnchorEl(event.currentTarget);
-  };
-  const ahandleClose = () => {
-    setaAnchorEl(null);
-  };
-  const aopen = Boolean(aanchorEl);
-  const aid = aopen ? 'simple-popover' : undefined;
-  const [aname, setaName] = useState('');
-  const [anumber, setaNumber] = useState('');
-  const ahandleName = (event) => {
-    setaName(event.target.value);
-  };
-  const ahandleNumber = (event) => {
-    setaNumber(event.target.value);
-  };
-
-  // editcontact açılır pencere variableları
-  const [ec, setEc] = useState();
-  const [eanchorEl, seteAnchorEl] = React.useState(null);
-  const ehandleClick = (event) => {
-    seteAnchorEl(event.currentTarget);
-  };
-  const ehandleClose = () => {
-    seteAnchorEl(null);
-  };
-  const eopen = Boolean(eanchorEl);
-  const eid = eopen ? 'simple-popover' : undefined;
-  const [ename, seteName] = useState('');
-  const [enumber, seteNumber] = useState('');
-  const ehandleName = (event) => {
-    seteName(event.target.value);
-  };
-  const ehandleNumber = (event) => {
-    seteNumber(event.target.value);
-  };
-
-  // remove contact açılır pencere variableları
-  const [ranchorEl, setrAnchorEl] = React.useState(null);
-  const rhandleClick = (event) => {
-    setrAnchorEl(event.currentTarget);
-  };
-  const rhandleClose = () => {
-    setrAnchorEl(null);
-  };
-  const ropen = Boolean(ranchorEl);
-  const rid = eopen ? 'simple-popover' : undefined;
-
-  //addcontact fonksiyonu
-  const addcontact = (name, number, token) => {
-    axios({
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      method: 'post',
-      url: 'http://localhost:3001/user/addcontact',
-      data: {
-        token: token,
-        contact: {
-          name: name,
-          number: number,
-        },
-      },
-    })
-      .then(setaAnchorEl(null))
-      .then(
-        list.push(makeList({ name: name, number: number }, list.length)),
-        slist.push(makeList({ name: name, number: number }, slist.length)),
-        setCount(slist.length)
-      );
-  };
-
-  //editcontact fonksiyonu
-  const editcontact = (name, number, token, c) => {
-    axios({
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      method: 'post',
-      url: 'http://localhost:3001/user/updatecontact',
-      data: {
-        key: c,
-        token: token,
-        contact: {
-          name: name,
-          number: number,
-        },
-      },
-    })
-      .then((res) => console.log('Res', res.data), seteAnchorEl(null))
-      .then(
-        list.splice(c, 1, makeList({ name: name, number: number }, c)),
-        slist.splice(c, 1, makeList({ name: name, number: number }, c)),
-        setCount(slist.length)
-      );
-  };
-
-  //removecontact fonksiyonu
-  const removecontact = (token, c) => {
-    axios({
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      method: 'post',
-      url: 'http://localhost:3001/user/deletecontact',
-      data: {
-        key: c,
-        token: token,
-      },
-    })
-      .then((res) => console.log('Res', res.data))
-      .then(list.splice(c, 1), setrAnchorEl(null), slist.splice(c, 1))
-      .then(setCount(slist.length));
   };
 
   //api çekme
@@ -350,36 +156,13 @@ const Contacts = () => {
   }, []);
 
   return (
-    <div
-      style={
-        isMobile
-          ? {
-              width: 350,
-              borderRadius: 8,
-              border: '1px solid #dadce0',
-              marginLeft: 'auto',
-              marginRight: 'auto',
-              marginTop: 50,
-            }
-          : {
-              width: 750,
-              borderRadius: 8,
-              border: '1px solid #dadce0',
-              marginLeft: 'auto',
-              marginRight: 'auto',
-              marginTop: 50,
-            }
-      }
-    >
+    //contacts screen dış container
+    <div style={contactsStyles.container}>
       <div direction="column" style={{ marginTop: 20 }}>
         <img
           alt="logo"
           src={require('../assets/Logo.png')}
-          style={
-            isMobile
-              ? { height: 40, width: 40, marginLeft: 25 }
-              : { height: 58, width: 58, marginLeft: 25 }
-          }
+          style={contactsStyles.logo}
         />
 
         {/* rehber arama kutucuğu */}
@@ -390,229 +173,80 @@ const Contacts = () => {
             setSearch(e.target.value);
             searchFilter(e.target.value);
           }}
-          style={
-            isMobile
-              ? { marginLeft: 25, width: 190 }
-              : { marginLeft: 25, width: 550 }
-          }
+          style={contactsStyles.search}
         />
 
         {/* rehber ekleme kısmı buton özellikleri  */}
         <img
           alt="add"
           src={require('../assets/add.svg')}
-          aria-describedby={aid}
-          onClick={ahandleClick}
-          style={
-            isMobile
-              ? { height: 25, width: 25, marginLeft: 20, cursor: 'pointer' }
-              : { height: 30, width: 30, marginLeft: 20, cursor: 'pointer' }
-          }
+          onClick={() => {
+            setAshow(true);
+          }}
+          style={contactsStyles.add}
         ></img>
+
         {/* rehber ekleme kısmı açılır pencere */}
-        <Popover
-          id={aid}
-          open={aopen}
-          anchorEl={aanchorEl}
-          onClose={ahandleClose}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'right',
-          }}
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
-          }}
-        >
-          <div direction="row" style={{ width: 240 }}>
-            <div
-              style={{ marginTop: 10, marginLeft: 10, height: 70, width: 220 }}
-            >
-              <TextField label="isim" value={aname} onChange={ahandleName} />
-            </div>
-            <div style={{ marginLeft: 10, height: 70, width: 220 }}>
-              <TextField
-                label="numara"
-                value={anumber}
-                onChange={ahandleNumber}
-              />
-            </div>
-            <div>
-              <Button
-                variant="contained"
-                style={{ display: 'flex', margin: 'auto', marginBottom: 10 }}
-                onClick={() => {
-                  addcontact(aname, anumber, token);
-                }}
-              >
-                Ekle
-              </Button>
-            </div>
-          </div>
-        </Popover>
+        <AddContactModal
+          setAshow={setAshow}
+          list={list}
+          makeList={makeList}
+          slist={slist}
+          setCount={setCount}
+          show={ashow}
+          token={token}
+          onHide={() => setAshow(false)}
+        />
       </div>
 
       {/* alt kısım */}
-      <div style={{ display: 'flex', height: 25, marginTop: 20 }}>
-        <p
-          style={
-            isMobile
-              ? {
-                  fontSize: 12,
-                  fontWeight: 500,
-                  width: 125,
-                  color: '#707070',
-                  marginLeft: 25,
-                }
-              : {
-                  fontSize: 15,
-                  fontWeight: 500,
-                  width: 340,
-                  color: '#707070',
-                  marginLeft: 25,
-                }
-          }
-        >
-          Rehber: {username}
-        </p>
-        <p
-          style={
-            isMobile
-              ? {
-                  fontSize: 12,
-                  fontWeight: 500,
-                  color: '#707070',
-                  width: 115,
-                }
-              : {
-                  fontSize: 15,
-                  fontWeight: 500,
-                  color: '#707070',
-                  width: 260,
-                }
-          }
-        >
-          Telefon numarası
-        </p>
-        <Button
-          onClick={logout}
-          style={isMobile ? { fontSize: 11, marginTop: -5 } : {}}
-        >
+      <div style={contactsStyles.alt}>
+        <p style={contactsStyles.username}>Rehber: {username}</p>
+        <p style={contactsStyles.telefon}>Telefon numarası</p>
+        <Button onClick={() => setLshow(true)} style={contactsStyles.çıkış}>
           Çıkış Yap
         </Button>
       </div>
       <hr style={{ margin: 15, color: '#878787' }} />
-      <p
-        style={{
-          marginLeft: 25,
-          fontSize: 12,
-          color: '#5f6368',
-          fontWeight: 500,
-        }}
-      >
-        Kişiler ({count})
-      </p>
+      <p style={contactsStyles.kişiler}>Kişiler ({count})</p>
 
       {/* kişi listesini görüntülünen kısım */}
       <ul style={{ listStyle: 'none' }}>{slist}</ul>
 
-      {/* rehber düzenleme açılır pencere*/}
-      <Popover
-        id={eid}
-        open={eopen}
-        anchorEl={eanchorEl}
-        onClose={ehandleClose}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-      >
-        <div direction="row" style={{ width: 240 }}>
-          <div
-            style={{
-              marginTop: 10,
-              marginLeft: 10,
-              height: 70,
-              width: 220,
-            }}
-          >
-            <TextField label="isim" value={ename} onChange={ehandleName} />
-          </div>
-          <div style={{ marginLeft: 10, height: 70, width: 220 }}>
-            <TextField
-              label="numara"
-              value={enumber}
-              onChange={ehandleNumber}
-            />
-          </div>
-          <div>
-            <Button
-              variant="contained"
-              style={{
-                display: 'flex',
-                margin: 'auto',
-                marginBottom: 10,
-              }}
-              onClick={() => {
-                editcontact(ename, enumber, token, ec);
-              }}
-            >
-              Düzenle
-            </Button>
-          </div>
-        </div>
-      </Popover>
+      {/* rehber düzenleme açılır pencere */}
+      <EditContactModal
+        makeList={makeList}
+        list={list}
+        slist={slist}
+        setCount={setCount}
+        c={c}
+        name={name}
+        number={number}
+        token={token}
+        setEshow={setEshow}
+        show={eshow}
+        onHide={() => setEshow(false)}
+      />
 
       {/* rehber silme açılır pencere*/}
-      <Popover
-        id={rid}
-        open={ropen}
-        anchorEl={ranchorEl}
-        onClose={rhandleClose}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-      >
-        <div direction="row" style={{ width: 240 }}>
-          <div
-            style={{
-              marginTop: 10,
-              marginLeft: 10,
-              height: 70,
-              width: 220,
-            }}
-          >
-            <TextField value={ename} label="name" disabled />
-          </div>
-          <div style={{ marginLeft: 10, height: 70, width: 220 }}>
-            <p>Silmek istediğinize emin misiniz?</p>
-          </div>
-          <div>
-            <Button
-              variant="contained"
-              style={{
-                display: 'flex',
-                margin: 'auto',
-                marginBottom: 10,
-              }}
-              onClick={() => {
-                removecontact(token, ec);
-              }}
-            >
-              Sil
-            </Button>
-          </div>
-        </div>
-      </Popover>
+      <RemoveContactModal
+        name={name}
+        token={token}
+        c={c}
+        setRshow={setRshow}
+        list={list}
+        slist={slist}
+        setCount={setCount}
+        show={rshow}
+        onHide={() => setRshow(false)}
+      />
+
+      {/* çıkış onay açılır penceresi */}
+      <LogoutModal
+        show={lshow}
+        setLshow={setLshow}
+        onHide={() => setLshow(false)}
+      />
     </div>
   );
 };
