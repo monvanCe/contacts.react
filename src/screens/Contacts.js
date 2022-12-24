@@ -125,7 +125,7 @@ const Contacts = () => {
 
       {/* alt kısım */}
       <div style={contactsStyles.alt}>
-        <p style={contactsStyles.username}>Rehber: {username}</p>
+        <p style={contactsStyles.username}>{username}</p>
         <p style={contactsStyles.telefon}>Telefon numarası</p>
         <Button onClick={() => setLshow(true)} style={contactsStyles.çıkış}>
           Çıkış Yap
@@ -140,6 +140,7 @@ const Contacts = () => {
       {/* rehber düzenleme açılır pencere */}
       <EditContactModal
         list={list}
+        setRshow={setRshow}
         slist={slist}
         setCount={setCount}
         c={c}

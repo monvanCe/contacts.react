@@ -305,7 +305,8 @@ const editcontactfunction = (name, number, props) => {
         props.setEshow,
         props.setC,
         props.setName,
-        props.setNumber
+        props.setNumber,
+        props.setRshow
       )
     ),
     props.slist.splice(
@@ -317,7 +318,8 @@ const editcontactfunction = (name, number, props) => {
         props.setEshow,
         props.setC,
         props.setName,
-        props.setNumber
+        props.setNumber,
+        props.setRshow
       )
     )
   );
@@ -338,8 +340,14 @@ export const RemoveContactModal = (props) => {
         <h3>Silmek İstediğinize emin misiniz ?</h3>
       </Modal.Header>
       <Modal.Body>
-        <div direction="row" style={{ display: 'flex' }}>
-          <p>{props.name}</p>
+        <div
+          style={{
+            marginTop: 10,
+            marginLeft: 10,
+            height: 70,
+          }}
+        >
+          <TextField label="isim" value={props.name} disabled />
         </div>
       </Modal.Body>
       <Modal.Footer>
