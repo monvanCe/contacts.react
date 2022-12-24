@@ -43,6 +43,7 @@ const Contacts = () => {
 
   //api çekme
   useEffect(() => {
+    // post gönderme
     axios({
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -59,15 +60,18 @@ const Contacts = () => {
           datas.push({ name: element.name, number: element.number });
         });
 
+        //logonun altındaki username'i atıyor
         setUsername(data.username);
       })
       .then(() => {
+        //list dizisini doldurur
         datas.forEach((el, c) => {
           list.push(
             makeList(el, c, setEshow, setC, setName, setNumber, setRshow)
           );
         });
 
+        //slist dizisini doldurur
         datas.forEach((el, c) => {
           slist.push(
             makeList(el, c, setEshow, setC, setName, setNumber, setRshow)
@@ -75,7 +79,7 @@ const Contacts = () => {
         });
       })
       .then(() => {
-        //sayıcıyı datas uzunluğuna eşitleme
+        //sayıcıyı slist dizisinin uzunluğuna eşitleme
         setCount(slist.length);
       });
   }, []);
@@ -84,6 +88,7 @@ const Contacts = () => {
     //contacts screen dış container
     <div style={contactsStyles.container}>
       <div direction="column" style={{ marginTop: 20 }}>
+        {/* app logo */}
         <img
           alt="logo"
           src={require('../assets/Logo.png')}
@@ -110,17 +115,6 @@ const Contacts = () => {
           }}
           style={contactsStyles.add}
         ></img>
-
-        {/* rehber ekleme kısmı açılır pencere */}
-        <AddContactModal
-          setAshow={setAshow}
-          list={list}
-          slist={slist}
-          setCount={setCount}
-          show={ashow}
-          token={token}
-          onHide={() => setAshow(false)}
-        />
       </div>
 
       {/* alt kısım */}
@@ -131,11 +125,26 @@ const Contacts = () => {
           Çıkış Yap
         </Button>
       </div>
+
+      {/* ayırım çizgisi */}
       <hr style={{ margin: 15, color: '#878787' }} />
+
+      {/* kişi sayısı */}
       <p style={contactsStyles.kişiler}>Kişiler ({count})</p>
 
       {/* kişi listesini görüntülünen kısım */}
       <ul style={{ listStyle: 'none' }}>{slist}</ul>
+
+      {/* rehber ekleme kısmı açılır pencere */}
+      <AddContactModal
+        setAshow={setAshow}
+        list={list}
+        slist={slist}
+        setCount={setCount}
+        show={ashow}
+        token={token}
+        onHide={() => setAshow(false)}
+      />
 
       {/* rehber düzenleme açılır pencere */}
       <EditContactModal
