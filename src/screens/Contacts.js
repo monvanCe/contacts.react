@@ -10,6 +10,7 @@ import {
   RemoveContactModal,
   LogoutModal,
   makeList,
+  searchFilter,
 } from '../components/ContactsFunctions';
 
 import { contactsStyles } from '../components/Styles';
@@ -39,25 +40,6 @@ const Contacts = () => {
   const [c, setC] = useState();
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
-
-  //filtreleme işini yapan fonskyinonumuz
-  const searchFilter = (e) => {
-    list
-      .filter((el) =>
-        el.props.children.props.children[1].props.children
-          .toLowerCase()
-          .includes(e)
-      )
-      .forEach((filteredName) => {
-        cache.push(filteredName);
-      });
-    setSlist(
-      cache.map((el) => {
-        return el;
-      })
-    );
-    setCache([]);
-  };
 
   //api çekme
   useEffect(() => {
@@ -114,7 +96,7 @@ const Contacts = () => {
           value={search}
           onChange={(e) => {
             setSearch(e.target.value);
-            searchFilter(e.target.value);
+            searchFilter(e.target.value, list, cache, setSlist, setCache);
           }}
           style={contactsStyles.search}
         />

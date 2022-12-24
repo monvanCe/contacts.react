@@ -6,6 +6,25 @@ import { useNavigate } from 'react-router-dom';
 
 import { contactsStyles } from './Styles';
 
+//filtreleme işini yapan fonskyinonumuz
+export const searchFilter = (e, list, cache, setSlist, setCache) => {
+  list
+    .filter((el) =>
+      el.props.children.props.children[1].props.children
+        .toLowerCase()
+        .includes(e)
+    )
+    .forEach((filteredName) => {
+      cache.push(filteredName);
+    });
+  setSlist(
+    cache.map((el) => {
+      return el;
+    })
+  );
+  setCache([]);
+};
+
 //rastgele renk return eden fonksiyon
 const randomColor = () => {
   var letters = '0123456789ABCDEF';
