@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Modal } from 'react-bootstrap';
 import axios from 'axios';
 import { Button, TextField } from '@mui/material';
@@ -107,8 +107,8 @@ const addcontactfunction = (name, number, props) => {
     data: {
       token: props.token,
       contact: {
-        name: props.name,
-        number: props.number,
+        name: name,
+        number: number,
       },
     },
   }).then(
@@ -127,8 +127,10 @@ export const EditContactModal = (props) => {
   const [ename, setEname] = useState(props.name);
   const [enumber, setEnumber] = useState(props.number);
 
-  props.show && !ename && setEname(props.name);
-  props.show && !ename && setEnumber(props.number);
+  useEffect(() => {
+    setEname(props.name);
+    setEnumber(props.number);
+  }, [props.name]);
 
   return (
     <Modal
