@@ -9,6 +9,7 @@ import {
   EditContactModal,
   RemoveContactModal,
   LogoutModal,
+  makeList,
 } from '../components/ContactsFunctions';
 
 import { contactsStyles } from '../components/Styles';
@@ -58,63 +59,6 @@ const Contacts = () => {
     setCache([]);
   };
 
-  //rastgele renk return eden fonksiyon
-  const randomColor = () => {
-    var letters = '0123456789ABCDEF';
-    var color = '#';
-    for (var i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 14)];
-    }
-    return color;
-  };
-
-  //diziyi listeleme array'ine importlayan fonksiyon
-  const makeList = (el, c) => {
-    return (
-      <li key={c}>
-        <div
-          style={{
-            display: 'flex',
-            margin: 15,
-            marginLeft: -5,
-          }}
-        >
-          <div
-            style={{ ...contactsStyles.brand, backgroundColor: randomColor() }}
-          >
-            <p style={contactsStyles.brandtext}>{el.name[0]}</p>
-          </div>
-
-          <div style={contactsStyles.name}>{el.name}</div>
-          <div style={contactsStyles.number}>{el.number}</div>
-          {/* rehber düzenleme*/}
-          <img
-            alt="edit"
-            src={require('../assets/edit.svg')}
-            onClick={() => {
-              setEshow(true);
-              setC(c);
-              setName(el.name);
-              setNumber(el.number);
-            }}
-            style={contactsStyles.edit}
-          />
-          {/* rehber silme */}
-          <img
-            alt="remove"
-            onClick={() => {
-              setRshow(true);
-              setC(c);
-              setName(el.name);
-            }}
-            src={require('../assets/remove.svg')}
-            style={contactsStyles.remove}
-          />
-        </div>
-      </li>
-    );
-  };
-
   //api çekme
   useEffect(() => {
     axios({
@@ -137,11 +81,15 @@ const Contacts = () => {
       })
       .then(() => {
         datas.forEach((el, c) => {
-          list.push(makeList(el, c));
+          list.push(
+            makeList(el, c, setEshow, setC, setName, setNumber, setRshow)
+          );
         });
 
         datas.forEach((el, c) => {
-          slist.push(makeList(el, c));
+          slist.push(
+            makeList(el, c, setEshow, setC, setName, setNumber, setRshow)
+          );
         });
       })
       .then(() => {
@@ -185,7 +133,6 @@ const Contacts = () => {
         <AddContactModal
           setAshow={setAshow}
           list={list}
-          makeList={makeList}
           slist={slist}
           setCount={setCount}
           show={ashow}
@@ -210,7 +157,6 @@ const Contacts = () => {
 
       {/* rehber düzenleme açılır pencere */}
       <EditContactModal
-        makeList={makeList}
         list={list}
         slist={slist}
         setCount={setCount}

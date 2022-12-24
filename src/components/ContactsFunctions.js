@@ -4,6 +4,74 @@ import axios from 'axios';
 import { Button, TextField } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
+import { contactsStyles } from './Styles';
+
+//rastgele renk return eden fonksiyon
+const randomColor = () => {
+  var letters = '0123456789ABCDEF';
+  var color = '#';
+  for (var i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 14)];
+  }
+  return color;
+};
+
+//diziyi listeleme array'ine importlayan fonksiyon
+export const makeList = (
+  el,
+  c,
+  setEshow,
+  setC,
+  setName,
+  setNumber,
+  setRshow
+) => {
+  return (
+    <li key={c}>
+      <div
+        style={{
+          display: 'flex',
+          margin: 15,
+          marginLeft: -5,
+        }}
+      >
+        <div
+          style={{ ...contactsStyles.brand, backgroundColor: randomColor() }}
+        >
+          <p style={contactsStyles.brandtext}>{el.name[0]}</p>
+        </div>
+
+        <div style={contactsStyles.name}>{el.name}</div>
+        <div style={contactsStyles.number}>{el.number}</div>
+
+        {/* rehber düzenleme*/}
+        <img
+          alt="edit"
+          src={require('../assets/edit.svg')}
+          onClick={() => {
+            setEshow(true);
+            setC(c);
+            setName(el.name);
+            setNumber(el.number);
+          }}
+          style={contactsStyles.edit}
+        />
+        {/* rehber silme */}
+        <img
+          alt="remove"
+          onClick={() => {
+            setRshow(true);
+            setC(c);
+            setName(el.name);
+          }}
+          src={require('../assets/remove.svg')}
+          style={contactsStyles.remove}
+        />
+      </div>
+    </li>
+  );
+};
+
 export const LogoutModal = (props) => {
   const navigate = useNavigate();
   return (
@@ -113,10 +181,10 @@ const addcontactfunction = (name, number, props) => {
     },
   }).then(
     props.list.push(
-      props.makeList({ name: name, number: number }, props.list.length)
+      makeList({ name: name, number: number }, props.list.length)
     ),
     props.slist.push(
-      props.makeList({ name: name, number: number }, props.slist.length)
+      makeList({ name: name, number: number }, props.slist.length)
     ),
     props.setCount(props.slist.length)
   );
@@ -212,12 +280,12 @@ const editcontactfunction = (name, number, props) => {
     props.list.splice(
       props.c,
       1,
-      props.makeList({ name: name, number: number }, props.c)
+      makeList({ name: name, number: number }, props.c)
     ),
     props.slist.splice(
       props.c,
       1,
-      props.makeList({ name: name, number: number }, props.c)
+      makeList({ name: name, number: number }, props.c)
     ),
     props.setCount(props.slist.length)
   );
