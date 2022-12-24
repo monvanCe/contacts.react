@@ -80,16 +80,11 @@ const Contacts = () => {
           }}
         >
           <div
-            style={
-              isMobile
-                ? { backgroundColor: randomColor(), borderRadius: 30 }
-                : { backgroundColor: randomColor(), borderRadius: 40 }
-            }
+            style={{ ...contactsStyles.brand, backgroundColor: randomColor() }}
           >
-            <div style={contactsStyles.brand}>
-              <p style={contactsStyles.brandtext}>{el.name[0]}</p>
-            </div>
+            <p style={contactsStyles.brandtext}>{el.name[0]}</p>
           </div>
+
           <div style={contactsStyles.name}>{el.name}</div>
           <div style={contactsStyles.number}>{el.number}</div>
           {/* rehber düzenleme*/}
